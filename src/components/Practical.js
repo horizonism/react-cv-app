@@ -45,6 +45,14 @@ class Practical extends Component{
         subBtn.classList.add('hide')
         editBtn.classList.remove('hide')
     }
+
+    handleRemove = (id) => {
+        const index = this.state.practicals.findIndex(item => item.id === id)
+        this.setState({
+            practicals: this.state.practicals.filter((_, i) => i !== index)
+        })
+        console.log(index)
+    }
     
     showEdit = () => {
         const editBtn = document.querySelector('.pracEdit')
@@ -62,6 +70,7 @@ class Practical extends Component{
             {item.from} 
             {item.until} 
             <button onClick={() => this.handleEdit(item.id)}>Edit</button>
+            <button onClick={() => this.handleRemove(item.id)}>Remove</button>
             </li>)
         return(
             <div>
@@ -74,9 +83,9 @@ class Practical extends Component{
                     <label>Main Task</label><br/>
                     <input type="text" name="main" onChange={this.handleChange}/><br/>
                     <label>From</label><br/>
-                    <input type="date" name="main" onChange={this.handleChange}/><br/>
+                    <input type="date" name="from" onChange={this.handleChange}/><br/>
                     <label>Until</label><br/>
-                    <input type="date" name="main" onChange={this.handleChange}/><br/><br/>
+                    <input type="date" name="until" onChange={this.handleChange}/><br/><br/>
                     <button type="submit">Submit</button><br/>
                 </form>
 
