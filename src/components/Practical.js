@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import uniqid from 'uniqid'
-
 class Practical extends Component{
     constructor(){
         super()
         this.state = {
-            companyName: "",
-            position: "",
+            currentId: "",
             main: "",
+            companyName: "",
+            title: "",
             from: "",
             until: "",
-            practicals: []
+            practical: []
         }
     }
     
@@ -24,71 +24,134 @@ class Practical extends Component{
     }
     
     handleSubmit = (e) => {
-        let practical = [{
+        e.preventDefault()
+
+        let prac = [{
             id: uniqid(),
             companyName: this.state.companyName,
-            position: this.state.position,
             main: this.state.main,
+            title: this.state.title,
             from: this.state.from,
             until: this.state.until,
         }]
 
         this.setState({
-            practicals: this.state.practicals.concat(practical)
+            practical: this.state.practical.concat(prac)
         })
 
-        e.preventDefault()
         const subBtn = document.querySelector('.pracForm')
         const editBtn = document.querySelector('.pracEdit')
-        const eduOverview = document.querySelector('.pracOverview')
-        eduOverview.classList.remove('hide')
+        const pracOverview = document.querySelector('.pracOverview')
+        pracOverview.classList.remove('hide')
         subBtn.classList.add('hide')
         editBtn.classList.remove('hide')
     }
 
-    handleRemove = (id) => {
-        const index = this.state.practicals.findIndex(item => item.id === id)
+    handleEdit = (id) => {
+        const pracEditForm = document.querySelector('.pracEditForm')
+        pracEditForm.classList.remove('hide')
+        const cur = this.state.practical.find(item => item.id === id);
         this.setState({
-            practicals: this.state.practicals.filter((_, i) => i !== index)
+            currentId: id,
+            companyName: cur.companyName,
+            main: cur.main,
+            title: cur.title,
+            from: cur.from,
+            until: cur.until
         })
-        console.log(index)
+    }
+
+    handleUpdate = (e) => {
+        e.preventDefault()
+        const curId = this.state.practical.findIndex(item => item.id === this.state.currentId);
+        const pracEditForm = document.querySelector('.pracEditForm')
+        pracEditForm.classList.add('hide')
+        let edus = {
+            id: this.state.currentId,
+            companyName: this.state.companyName,
+            main: this.state.main,
+            title: this.state.title,
+            from: this.state.from,
+            until: this.state.until
+        }
+        let newArr = this.state.practical
+        newArr[curId] = edus
+        this.setState({
+            currentId: this.state.currentId,
+            practical: newArr
+        })
+    }
+
+    handleRemove = (id) => {
+        const index = this.state.practical.findIndex(item => item.id === id)
+        let newArr = this.state.practical
+        newArr.splice(index, 1)
+        this.setState({
+            practical: newArr
+            // practical: this.state.practical.filter((_, i) => i !== index)
+        })
     }
     
     showEdit = () => {
+        this.setState({
+            main: "",
+            companyName: "",
+            title: "",
+            from: "",
+            until: "",
+        })
+        const pracEdit = document.querySelector('.pracEditForm')
         const editBtn = document.querySelector('.pracEdit')
         const subBtn = document.querySelector('.pracForm')
-        const eduOverview = document.querySelector('.pracOverview')
-        eduOverview.classList.add('hide')
+        const pracOverview = document.querySelector('.pracOverview')
+        pracEdit.classList.add('hide')
+        pracOverview.classList.add('hide')
         editBtn.classList.add('hide')
         subBtn.classList.remove('hide')
     }
+
     render(){
-        const practical = this.state.practicals.map(item => <li key={item.id}>
-            {item.companyName} 
-            {item.position} 
-            {item.main} 
-            {item.from} 
-            {item.until} 
-            <button onClick={() => this.handleEdit(item.id)}>Edit</button>
-            <button onClick={() => this.handleRemove(item.id)}>Remove</button>
-            </li>)
+    const practical = this.state.practical.map(item => 
+    <li key={item.id}>
+        {item.companyName} &nbsp;
+        {item.main} &nbsp;
+        {item.title} &nbsp;
+        {item.from} &nbsp;
+        {item.until} &nbsp;
+        <button onClick={() => this.handleEdit(item.id)}>Edit</button>
+        <button onClick={() => this.handleRemove(item.id)}>Remove</button>
+    </li>)
         return(
             <div>
                 <h3>Practical Information <button className="pracEdit hide" onClick={this.showEdit}>E</button></h3>
                 <form className="pracForm" onSubmit={this.handleSubmit}>
                     <label>Company Name</label><br/>
-                    <input type="text" name="companyName" onChange={this.handleChange}/><br/>
-                    <label>Position</label><br/>
-                    <input type="text" name="position" onChange={this.handleChange}/><br/>
+                    <input type="text" name="companyName" onChange={this.handleChange} value={this.state.companyName}/><br/>
                     <label>Main Task</label><br/>
-                    <input type="text" name="main" onChange={this.handleChange}/><br/>
+                    <input type="text" name="main" onChange={this.handleChange} value={this.state.main}/><br/>
+                    <label>Position</label><br/>
+                    <input type="text" name="title" onChange={this.handleChange} value={this.state.title}/><br/>
                     <label>From</label><br/>
-                    <input type="date" name="from" onChange={this.handleChange}/><br/>
+                    <input type="date" name="from" onChange={this.handleChange} value={this.state.from}/><br/>
                     <label>Until</label><br/>
-                    <input type="date" name="until" onChange={this.handleChange}/><br/><br/>
+                    <input type="date" name="until" onChange={this.handleChange} value={this.state.until}/><br/><br/>
                     <button type="submit">Submit</button><br/>
                 </form>
-
+                <div className="pracEditForm hide">
+                <form onSubmit={this.handleUpdate}>
+                    <label>Company Name</label><br/>
+                    <input type="text" name="companyName" onChange={this.handleChange} value={this.state.companyName}/><br/>
+                    <label>Main Task</label><br/>
+                    <input type="text" name="main" onChange={this.handleChange} value={this.state.main}/><br/>
+                    <label>Position</label><br/>
+                    <input type="text" name="title" onChange={this.handleChange} value={this.state.title}/><br/>
+                    <label>From</label><br/>
+                    <input type="date" name="from" onChange={this.handleChange} value={this.state.from}/><br/>
+                    <label>Until</label><br/>
+                    <input type="date" name="until" onChange={this.handleChange} value={this.state.until}/><br/><br/>
+                    <button type="submit">Submit</button><br/>
+                </form>
+                </div>
                 <div className="pracOverview">
                     {practical}
                 </div>
