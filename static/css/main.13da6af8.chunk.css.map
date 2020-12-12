@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/index.css"],"names":[],"mappings":"AAAA,EACI,sCACJ,CAEA,MACI,YACJ","file":"main.13da6af8.chunk.css","sourcesContent":["*{\n    font-family: Arial, Helvetica, sans-serif;\n}\n\n.hide{\n    display: none;\n}"]}
